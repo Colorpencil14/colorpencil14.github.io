@@ -1,80 +1,216 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Colorpencil14's Personal Website">
-    <title>Colorpencil14 - Personal Website</title>
+    <meta name="description" content="Minecraft烟花刷怪笼NBT生成器 - 在线生成Minecraft刷怪笼NBT数据">
+    <meta name="keywords" content="Minecraft, 刷怪笼, NBT, 生成器, 烟花">
+    <meta name="author" content="Colorpencil">
+    <title>Minecraft烟花刷怪笼生成器</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <header>
-        <nav>
-            <div class="container">
-                <h1 class="logo">Colorpencil14</h1>
-                <ul class="nav-links">
-                    <li><a href="#about">关于</a></li>
-                    <li><a href="#projects">项目</a></li>
-                    <li><a href="#contact">联系</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+    <div class="container">
+        <header class="header">
+            <h1>🎆 Minecraft烟花刷怪笼生成器</h1>
+            <p class="subtitle">Colorpencil的在线NBT生成工具</p>
+        </header>
 
-    <main>
-        <section id="hero" class="hero">
-            <div class="container">
-                <h2>欢迎来到我的个人网站</h2>
-                <p>Welcome to My Personal Website</p>
-                <a href="#about" class="btn">了解更多</a>
-            </div>
-        </section>
-
-        <section id="about" class="about">
-            <div class="container">
-                <h2>关于我</h2>
-                <p>这是一个示例GitHub Pages网站。您可以在这里分享您的个人信息、项目和联系方式。</p>
-                <p>This is a sample GitHub Pages website. You can share your personal information, projects, and contact details here.</p>
-            </div>
-        </section>
-
-        <section id="projects" class="projects">
-            <div class="container">
-                <h2>我的项目</h2>
-                <div class="project-grid">
-                    <div class="project-card">
-                        <h3>项目 1</h3>
-                        <p>这是第一个示例项目的描述。您可以在这里添加项目的详细信息。</p>
-                    </div>
-                    <div class="project-card">
-                        <h3>项目 2</h3>
-                        <p>这是第二个示例项目的描述。您可以在这里添加项目的详细信息。</p>
-                    </div>
-                    <div class="project-card">
-                        <h3>项目 3</h3>
-                        <p>这是第三个示例项目的描述。您可以在这里添加项目的详细信息。</p>
-                    </div>
+        <main class="main-content">
+            <!-- 使用说明 -->
+            <div class="info-banner">
+                <div class="info-icon">💡</div>
+                <div class="info-content">
+                    <strong>使用说明：</strong>
+                    此工具用于生成会刷烟花的Minecraft刷怪笼的NBT数据。填写下方表单后点击"生成NBT"，
+                    然后将生成的内容复制到命令方块中并执行。也可用于直接编辑NBT文件。
                 </div>
             </div>
-        </section>
 
-        <section id="contact" class="contact">
-            <div class="container">
-                <h2>联系方式</h2>
-                <p>如果您想联系我，可以通过以下方式：</p>
-                <ul class="contact-list">
-                    <li>📧 Email: your-email@example.com</li>
-                    <li>🐙 GitHub: <a href="https://github.com/Colorpencil14" target="_blank">@Colorpencil14</a></li>
-                    <li>🌐 Website: <a href="https://colorpencil14.github.io" target="_blank">colorpencil14.github.io</a></li>
-                </ul>
+            <!-- ===== 基本信息与刷怪笼参数 ===== -->
+            <div class="form-section">
+                <h2>⚙️ 基本信息与刷怪笼参数</h2>
+                <p class="section-desc">设置刷怪笼的显示信息和生成行为</p>
+
+                <div class="form-grid">
+                    <!-- 基本信息 -->
+                    <div class="form-group">
+                        <label for="name">
+                            名称 (Name)
+                            <span class="tooltip" data-tip="刷怪笼物品的主要显示名称，会显示为「XXX|烟花刷怪笼」">?</span>
+                        </label>
+                        <input type="text" id="name" placeholder="例: 双色苦力怕" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="no">
+                            编号 (No)
+                            <span class="tooltip" data-tip="刷怪笼的编号，用于标识和分类">?</span>
+                        </label>
+                        <input type="text" id="no" placeholder="例: 1" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="tip">
+                            提示信息 (Tip)
+                            <span class="tooltip" data-tip="物品描述中的红色提示文字，用于说明使用方法或注意事项">?</span>
+                        </label>
+                        <input type="text" id="tip" placeholder="例: 放远处" required>
+                    </div>
+
+                    <!-- 主要刷怪笼参数 -->
+                    <div class="form-group">
+                        <label for="minSpawnDelay">
+                            最小生成间隔 (MinSpawnDelay)
+                            <span class="tooltip" data-tip="两次生成之间的最短等待时间(游戏刻)。20刻=1秒">?</span>
+                        </label>
+                        <select id="minSpawnDelay">
+                            <option value="20">20刻 (1秒)</option>
+                            <option value="40">40刻 (2秒)</option>
+                            <option value="60" selected>60刻 (3秒)</option>
+                            <option value="100">100刻 (5秒)</option>
+                            <option value="200">200刻 (10秒)</option>
+                            <option value="custom">自定义...</option>
+                        </select>
+                        <input type="number" id="minSpawnDelayCustom" class="custom-input hidden"
+                            placeholder="输入自定义值 (ticks)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxSpawnDelay">
+                            最大生成间隔 (MaxSpawnDelay)
+                            <span class="tooltip" data-tip="两次生成之间的最长等待时间(游戏刻)。实际间隔在最小和最大之间随机">?</span>
+                        </label>
+                        <select id="maxSpawnDelay">
+                            <option value="60">60刻 (3秒)</option>
+                            <option value="100">100刻 (5秒)</option>
+                            <option value="180" selected>180刻 (9秒)</option>
+                            <option value="400">400刻 (20秒)</option>
+                            <option value="800">800刻 (40秒)</option>
+                            <option value="custom">自定义...</option>
+                        </select>
+                        <input type="number" id="maxSpawnDelayCustom" class="custom-input hidden"
+                            placeholder="输入自定义值 (ticks)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="spawnCount">
+                            每次生成数量 (SpawnCount)
+                            <span class="tooltip" data-tip="每次激活时尝试生成的实体数量">?</span>
+                        </label>
+                        <select id="spawnCount">
+                            <option value="">不设置 (使用默认值4)</option>
+                            <option value="1">1个</option>
+                            <option value="2">2个</option>
+                            <option value="4">4个 (原版默认)</option>
+                            <option value="6">6个</option>
+                            <option value="8">8个</option>
+                            <option value="custom">自定义...</option>
+                        </select>
+                        <input type="number" id="spawnCountCustom" class="custom-input hidden" placeholder="输入自定义值">
+                    </div>
+                </div>
+
+                <!-- 高级参数折叠区 -->
+                <details class="advanced-params">
+                    <summary>🔧 高级参数（可选）</summary>
+                    <div class="form-grid advanced-grid">
+                        <div class="form-group">
+                            <label for="delay">
+                                初始延迟 (Delay)
+                                <span class="tooltip" data-tip="刷怪笼放置后首次生成实体前的等待时间。-1表示玩家接近时重置为随机延迟">?</span>
+                            </label>
+                            <input type="number" id="delay" value="-1" placeholder="-1">
+                            <span class="hint">默认: -1 (玩家靠近时随机延迟)</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="requiredPlayerRange">
+                                激活范围 (RequiredPlayerRange)
+                                <span class="tooltip" data-tip="玩家需要在多少格内刷怪笼才会激活。327是极大值，几乎总是激活">?</span>
+                            </label>
+                            <input type="number" id="requiredPlayerRange" value="327" placeholder="327">
+                            <span class="hint">默认: 327格 (始终激活)</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="spawnRange">
+                                生成范围 (SpawnRange)
+                                <span class="tooltip" data-tip="实体在刷怪笼周围多大范围内生成(水平距离)">?</span>
+                            </label>
+                            <input type="number" id="spawnRange" value="" placeholder="4">
+                            <span class="hint">默认: 4格 (留空使用默认值)</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxNearbyEntities">
+                                最大附近实体数 (MaxNearbyEntities)
+                                <span class="tooltip" data-tip="当附近相同类型实体达到这个数量时，刷怪笼停止生成">?</span>
+                            </label>
+                            <input type="number" id="maxNearbyEntities" value="" placeholder="6">
+                            <span class="hint">默认: 6个 (留空使用默认值，烟花建议设置较高)</span>
+                        </div>
+                    </div>
+                </details>
             </div>
-        </section>
-    </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 Colorpencil14. All rights reserved.</p>
-        </div>
-    </footer>
+            <!-- ===== 烟花实体配置 ===== -->
+            <div class="form-section">
+                <h2>🎆 烟花实体配置 (SpawnPotentials)</h2>
+                <p class="section-desc">配置刷怪笼可以生成的烟花火箭及其属性。权重越高，该烟花被选中的概率越大。</p>
+
+                <div class="preset-bar">
+                    <label for="presetSelect">📦 快速加载预设：</label>
+                    <select id="presetSelect">
+                        <option value="">— 选择预设 —</option>
+                    </select>
+                    <button class="btn-add-sm" id="loadPresetBtn">加载</button>
+                    <span class="hint preset-hint">加载预设将覆盖当前所有配置</span>
+                </div>
+
+                <div id="entitiesList" class="entities-list">
+                    <!-- 动态生成的烟花实体卡片 -->
+                </div>
+
+                <button type="button" id="addEntityBtn" class="btn btn-add">
+                    <span class="btn-icon">+</span> 添加烟花实体
+                </button>
+            </div>
+
+            <!-- ===== 生成 ===== -->
+            <div class="action-section">
+                <button type="button" id="generateBtn" class="btn btn-primary">
+                    <span class="btn-icon">⚡</span> 生成NBT
+                </button>
+                <p class="action-hint">或按 <kbd>Ctrl</kbd> + <kbd>Enter</kbd></p>
+            </div>
+
+            <!-- ===== 输出 ===== -->
+            <div class="output-section" id="outputSection" style="display: none;">
+                <div class="output-header">
+                    <h2>📋 生成结果</h2>
+                    <button type="button" id="copyBtn" class="btn btn-copy">
+                        <span class="btn-icon">📋</span> 复制
+                    </button>
+                </div>
+                <div class="output-box">
+                    <pre id="output"></pre>
+                </div>
+                <div class="output-footer">
+                    <p class="success-message" id="copyMessage" style="display: none;">✓ 已复制到剪贴板!</p>
+                    <p class="usage-hint">使用方法: 将以上内容粘贴到命令方块里并执行。粘贴到聊天框可能因为太长而被截断。（128字符限制）</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Made with ❤️ by Colorpencil | <a href="https://github.com/Colorpencil" target="_blank">GitHub</a></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
