@@ -24,141 +24,14 @@
                 <div class="info-icon">💡</div>
                 <div class="info-content">
                     <strong>使用说明：</strong>
-                    此工具用于生成会刷烟花的Minecraft刷怪笼的NBT数据。填写下方表单后点击"生成NBT"，
+                    此工具用于生成会刷烟花的Minecraft刷怪笼的NBT数据。填写下方表单后点击“生成NBT”，
                     然后将生成的内容复制到命令方块中并执行。也可用于直接编辑NBT文件。仅适用于Java版<strong>1.20.5以前</strong>的版本。
                 </div>
             </div>
 
-            <!-- ===== 基本信息与刷怪笼参数 ===== -->
-            <div class="form-section">
-                <h2>⚙️ 基本信息与刷怪笼参数</h2>
-                <p class="section-desc">设置刷怪笼的显示信息和生成行为</p>
-
-                <div class="form-grid">
-                    <!-- 基本信息 -->
-                    <div class="form-group">
-                        <label for="name">
-                            名称 (Name)
-                            <span class="tooltip" data-tip="刷怪笼物品的主要显示名称，会显示为「XXX|烟花刷怪笼」">?</span>
-                        </label>
-                        <input type="text" id="name" placeholder="例: 双色苦力怕" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="no">
-                            编号 (No)
-                            <span class="tooltip" data-tip="刷怪笼的编号，用于标识和分类">?</span>
-                        </label>
-                        <input type="text" id="no" placeholder="例: 1" required>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="tip">
-                            提示信息 (Tip)
-                            <span class="tooltip" data-tip="物品描述中的红色提示文字，用于说明使用方法或注意事项">?</span>
-                        </label>
-                        <input type="text" id="tip" placeholder="例: 放远处" required>
-                    </div>
-
-                    <!-- 主要刷怪笼参数 -->
-                    <div class="form-group">
-                        <label for="minSpawnDelay">
-                            最小生成间隔 (MinSpawnDelay)
-                            <span class="tooltip" data-tip="两次生成之间的最短等待时间(游戏刻)。20刻=1秒">?</span>
-                        </label>
-                        <select id="minSpawnDelay">
-                            <option value="20">20刻 (1秒)</option>
-                            <option value="40">40刻 (2秒)</option>
-                            <option value="60" selected>60刻 (3秒)</option>
-                            <option value="100">100刻 (5秒)</option>
-                            <option value="200">200刻 (10秒)</option>
-                            <option value="custom">自定义...</option>
-                        </select>
-                        <input type="number" id="minSpawnDelayCustom" class="custom-input hidden"
-                            placeholder="输入自定义值 (ticks)">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="maxSpawnDelay">
-                            最大生成间隔 (MaxSpawnDelay)
-                            <span class="tooltip" data-tip="两次生成之间的最长等待时间(游戏刻)。实际间隔在最小和最大之间随机">?</span>
-                        </label>
-                        <select id="maxSpawnDelay">
-                            <option value="60">60刻 (3秒)</option>
-                            <option value="100">100刻 (5秒)</option>
-                            <option value="180" selected>180刻 (9秒)</option>
-                            <option value="400">400刻 (20秒)</option>
-                            <option value="800">800刻 (40秒)</option>
-                            <option value="custom">自定义...</option>
-                        </select>
-                        <input type="number" id="maxSpawnDelayCustom" class="custom-input hidden"
-                            placeholder="输入自定义值 (ticks)">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="spawnCount">
-                            每次生成数量 (SpawnCount)
-                            <span class="tooltip" data-tip="每次激活时尝试生成的实体数量">?</span>
-                        </label>
-                        <select id="spawnCount">
-                            <option value="">不设置 (使用默认值4)</option>
-                            <option value="1">1个</option>
-                            <option value="2">2个</option>
-                            <option value="4">4个 (原版默认)</option>
-                            <option value="6">6个</option>
-                            <option value="8">8个</option>
-                            <option value="custom">自定义...</option>
-                        </select>
-                        <input type="number" id="spawnCountCustom" class="custom-input hidden" placeholder="输入自定义值">
-                    </div>
-                </div>
-
-                <!-- 高级参数折叠区 -->
-                <details class="advanced-params">
-                    <summary>🔧 高级参数（可选）</summary>
-                    <div class="form-grid advanced-grid">
-                        <div class="form-group">
-                            <label for="delay">
-                                初始延迟 (Delay)
-                                <span class="tooltip" data-tip="刷怪笼放置后首次生成实体前的等待时间。-1表示玩家接近时重置为随机延迟">?</span>
-                            </label>
-                            <input type="number" id="delay" value="-1" placeholder="-1">
-                            <span class="hint">默认: -1 (玩家靠近时随机延迟)</span>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="requiredPlayerRange">
-                                激活范围 (RequiredPlayerRange)
-                                <span class="tooltip" data-tip="玩家需要在多少格内刷怪笼才会激活。327是极大值，几乎总是激活">?</span>
-                            </label>
-                            <input type="number" id="requiredPlayerRange" value="327" placeholder="327">
-                            <span class="hint">默认: 327格 (始终激活)</span>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="spawnRange">
-                                生成范围 (SpawnRange)
-                                <span class="tooltip" data-tip="实体在刷怪笼周围多大范围内生成(水平距离)">?</span>
-                            </label>
-                            <input type="number" id="spawnRange" value="" placeholder="4">
-                            <span class="hint">默认: 4格 (留空使用默认值)</span>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="maxNearbyEntities">
-                                最大附近实体数 (MaxNearbyEntities)
-                                <span class="tooltip" data-tip="当附近相同类型实体达到这个数量时，刷怪笼停止生成">?</span>
-                            </label>
-                            <input type="number" id="maxNearbyEntities" value="" placeholder="6">
-                            <span class="hint">默认: 6个 (留空使用默认值，烟花建议设置较高)</span>
-                        </div>
-                    </div>
-                </details>
-            </div>
-
             <!-- ===== 烟花实体配置 ===== -->
             <div class="form-section">
-                <h2>🎆 烟花实体配置 (SpawnPotentials)</h2>
+                <h2>🎆 烟花实体配置（SpawnPotentials）</h2>
                 <p class="section-desc">配置刷怪笼可以生成的烟花火箭及其属性。权重越高，该烟花被选中的概率越大。</p>
 
                 <div class="preset-bar">
@@ -177,6 +50,128 @@
                 <button type="button" id="addEntityBtn" class="btn btn-add">
                     <span class="btn-icon">+</span> 添加烟花实体
                 </button>
+            </div>
+
+            <!-- ===== 基本信息与刷怪笼参数 ===== -->
+            <div class="form-section">
+                <h2>⚙️ 基本信息与刷怪笼参数</h2>
+                <p class="section-desc">设置刷怪笼的显示信息和生成行为</p>
+
+                <div class="form-grid">
+                    <!-- 基本信息 -->
+                    <div class="form-group">
+                        <label for="name">
+                            物品名称
+                            <span class="tooltip" data-tip="刷怪笼物品的显示名称，会显示为「XXX|烟花刷怪笼」">?</span>
+                        </label>
+                        <input type="text" id="name" placeholder="例： 双色苦力怕" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="no">
+                            编号
+                            <span class="tooltip" data-tip="物品描述中第二行，用于防止在物品栏中混淆，建议三位分别代表时间/种类/迭代">?</span>
+                        </label>
+                        <input type="text" id="no" placeholder="例： 641" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="tip">
+                            备注
+                            <span class="tooltip" data-tip="物品描述中第三行，用于说明观赏距离等">?</span>
+                        </label>
+                        <input type="text" id="tip" placeholder="例： 放远处" required>
+                    </div>
+
+                    <!-- 主要刷怪笼参数 -->
+                    <div class="form-group">
+                        <label for="minSpawnDelay">
+                            最小生成间隔（MinSpawnDelay）
+                            <span class="tooltip" data-tip="两次生成之间的最短等待时间（游戏刻）。20刻≈1秒">?</span>
+                        </label>
+                        <select id="minSpawnDelay">
+                            <option value="">不设置（原版默认值200）</option>
+                            <option value="20">20刻（1秒）</option>
+                            <option value="40">40刻（2秒）</option>
+                            <option value="60" selected>60刻（3秒）</option>
+                            <option value="100">100刻（5秒）</option>
+                            <option value="200">200刻（10秒，原版默认）</option>
+                            <option value="custom">自定义...</option>
+                        </select>
+                        <input type="number" id="minSpawnDelayCustom" class="custom-input hidden"
+                            placeholder="输入自定义值（游戏刻）">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxSpawnDelay">
+                            最大生成间隔（MaxSpawnDelay）
+                            <span class="tooltip" data-tip="两次生成之间的最长等待时间（游戏刻）。实际间隔在最小和最大之间随机">?</span>
+                        </label>
+                        <select id="maxSpawnDelay">
+                            <option value="">不设置（原版默认值800）</option>
+                            <option value="60">60刻（3秒）</option>
+                            <option value="100">100刻（5秒）</option>
+                            <option value="180" selected>180刻（9秒）</option>
+                            <option value="400">400刻（20秒）</option>
+                            <option value="800">800刻（40秒，原版默认）</option>
+                            <option value="custom">自定义...</option>
+                        </select>
+                        <input type="number" id="maxSpawnDelayCustom" class="custom-input hidden"
+                            placeholder="输入自定义值（游戏刻）">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="spawnCount">
+                            每次生成数量（SpawnCount）
+                            <span class="tooltip" data-tip="每次激活时尝试生成的实体数量">?</span>
+                        </label>
+                        <select id="spawnCount">
+                            <option value="">不设置（原版默认值4）</option>
+                            <option value="1" selected>1个</option>
+                            <option value="2">2个</option>
+                            <option value="3">3个</option>
+                            <option value="4">4个（原版默认）</option>
+                            <option value="5">5个</option>
+                            <option value="custom">自定义...</option>
+                        </select>
+                        <input type="number" id="spawnCountCustom" class="custom-input hidden" placeholder="输入自定义值">
+                    </div>
+                </div>
+
+                <!-- 高级参数折叠区 -->
+                <details class="advanced-params">
+                    <summary>🔧 高级参数（一般无需修改）</summary>
+                    <div class="form-grid advanced-grid">
+                        <div class="form-group">
+                            <label for="delay">
+                                Delay
+                            </label>
+                            <input type="number" id="delay" value="-1" placeholder="-1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="requiredPlayerRange">
+                                RequiredPlayerRange
+                            </label>
+                            <input type="number" id="requiredPlayerRange" value="327" placeholder="327">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="spawnRange">
+                                SpawnRange
+                                <span class="tooltip" data-tip="采用切比雪夫距离，越靠近刷怪笼生成在此位置的概率越大。">?</span>
+                            </label>
+                            <input type="number" id="spawnRange" value="4" placeholder="4">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxNearbyEntities">
+                                MaxNearbyEntities
+                            </label>
+                            <input type="number" id="maxNearbyEntities" value="6" placeholder="6">
+                        </div>
+                    </div>
+                </details>
             </div>
 
             <!-- ===== 生成 ===== -->
@@ -199,14 +194,15 @@
                     <pre id="output"></pre>
                 </div>
                 <div class="output-footer">
-                    <p class="success-message" id="copyMessage" style="display: none;">✓ 已复制到剪贴板!</p>
-                    <p class="usage-hint">使用方法: 将以上内容粘贴到命令方块里并执行。粘贴到聊天框可能因为太长而被截断。（128字符限制）</p>
+                    <p class="success-message" id="copyMessage" style="display: none;">✓ 已复制到剪贴板！</p>
+                    <p class="usage-hint">使用方法： 将以上内容粘贴到命令方块里并执行。粘贴到聊天框可能因为太长而被截断。（128字符限制）</p>
                 </div>
             </div>
         </main>
 
         <footer class="footer">
-            <p>Made with ❤️ by Claude | <a href="https://github.com/Colorpencil14" target="_blank">GitHub</a></p>
+            <p>Made with ❤️ by Claude, ChatGPT, Gemini and DeepSeek | <a href="https://github.com/Colorpencil14"
+                    target="_blank">GitHub</a></p>
         </footer>
     </div>
 

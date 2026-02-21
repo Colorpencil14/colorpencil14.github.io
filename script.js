@@ -22,11 +22,11 @@ const DYE_COLORS = [
 
 // 爆炸形态
 const EXPLOSION_TYPES = [
-    { value: 0, label: '小型球状 (Small Ball)' },
-    { value: 1, label: '大型球状 (Large Ball)' },
-    { value: 2, label: '星形 (Star)' },
-    { value: 3, label: '苦力怕状 (Creeper)' },
-    { value: 4, label: '喷发状 (Burst)' },
+    { value: 0, label: '小型球状（Small Ball）' },
+    { value: 1, label: '大型球状（Large Ball）' },
+    { value: 2, label: '星形（Star）' },
+    { value: 3, label: '苦力怕状（Creeper）' },
+    { value: 4, label: '喷发状（Burst）' },
 ];
 
 // ========================================
@@ -77,13 +77,13 @@ function rgbToHex(r, g, b) {
 }
 
 const HARMONY_MODES = [
-    { value: 'analogous', label: '类似色 (Analogous)' },
-    { value: 'complementary', label: '互补色 (Complementary)' },
-    { value: 'triadic', label: '三角色 (Triadic)' },
-    { value: 'split', label: '分裂互补 (Split-Comp)' },
-    { value: 'tetradic', label: '四角色 (Tetradic)' },
-    { value: 'mono', label: '单色渐变 (Monochromatic)' },
-    { value: 'rainbow', label: '彩虹 (Rainbow)' },
+    { value: 'analogous', label: '类似色（Analogous）' },
+    { value: 'complementary', label: '互补色（Complementary）' },
+    { value: 'triadic', label: '三角色（Triadic）' },
+    { value: 'split', label: '分裂互补（Split-Comp）' },
+    { value: 'tetradic', label: '四角色（Tetradic）' },
+    { value: 'mono', label: '单色渐变（Monochromatic）' },
+    { value: 'rainbow', label: '彩虹（Rainbow）' },
 ];
 
 function generateHarmony(baseHex, mode) {
@@ -107,7 +107,7 @@ function generateHarmony(baseHex, mode) {
         case 'tetradic':
             return [make(h, sOut, lOut), make((h + 90) % 360, sOut, lOut), make((h + 180) % 360, sOut, lOut), make((h + 270) % 360, sOut, lOut)];
         case 'mono':
-            return [make(h, sOut, 0.25), make(h, sOut, 0.35), make(h, sOut, 0.50), make(h, sOut, 0.65), make(h, sOut, 0.80)];
+            return [make(h, sOut, 0.40), make(h, sOut, 0.65), make(h, sOut, 0.75), make(h, sOut, 0.85)];
         case 'rainbow':
             return [0, 30, 60, 120, 180, 210, 270, 330].map(o => make((h + o) % 360, sOut, lOut));
         default:
@@ -214,25 +214,44 @@ function renderEntityCard(ent, idx) {
 
         <div class="entity-params">
             <div class="form-group">
-                <label>权重 (Weight)
-                    <span class="tooltip" data-tip="相对其他实体被选中的权重，值越大越容易被选中">?</span>
+                <label>权重（Weight）
+                    <span class="tooltip" data-tip="相对其他实体生成的可能性，值越大越容易生成">?</span>
                 </label>
                 <input type="number" min="1" value="${ent.weight}"
                        onchange="updateEntity(${ent.id}, 'weight', this.value)">
             </div>
             <div class="form-group">
-                <label>存活时间 (LifeTime)
-                    <span class="tooltip" data-tip="烟花火箭的存活时间(ticks)，影响爆炸高度。值越大飞得越高。20刻=1秒">?</span>
+                <label>爆炸时间（LifeTime）
+                    <span class="tooltip" data-tip="不是爆炸高度。烟花火箭在该时间后爆炸。20刻≈1秒">?</span>
                 </label>
-                <input type="number" min="0" value="${ent.lifeTime}"
-                       onchange="updateEntity(${ent.id}, 'lifeTime', this.value)">
-                <span class="hint">${(ent.lifeTime / 20).toFixed(1)}秒</span>
+                  <input type="number" min="0" value="${ent.lifeTime}"
+                      list="lifeTimeDatalist_${ent.id}"
+                      onchange="updateEntity(${ent.id}, 'lifeTime', this.value)">
+                  <datalist id="lifeTimeDatalist_${ent.id}">
+                      <option value="10" label="地面（0.5秒）"></option>
+                      <option value="25" label="低空（1.25秒，约1个火药）"></option>
+                      <option value="30" label="中高（1.5秒）" selected></option>
+                      <option value="35" label="高空（1.75秒，约2个火药）"></option>
+                      <option value="40" label="极高（2秒）"></option>
+                  </datalist>
+                <span class="hint">≈${(ent.lifeTime / 20).toFixed(2)}秒，约${(() => {
+                    const L = ent.lifeTime;
+                    const fmin = Math.max(0, Math.ceil((L - 11) / 10) - 1);
+                    const fmax = Math.max(0, Math.floor(L / 10) - 1);
+                    return fmin === fmax ? `${fmin}个火药` : `${fmin}~${fmax}个火药`;
+                })()}<span class="tooltip" data-tip="火药对应爆炸时间计算公式为：10(火药数+1)+rand(6)+rand(7)，rand(x)返回[0,x−1]的随机整数。20刻≈1秒">?</span>估计高度≈${(() => {
+                    const L = ent.lifeTime;
+                    const h = 0.02 * L * L + 0.03 * L;//我也不知道为什么wiki上数据和公式对不上。
+                    return h.toFixed(1);
+                })()}格
+                    <span class="tooltip" data-tip="初始竖直速度0.05，每刻加0.04。X/Z为接近零的随机小值（σ≈0.001），每刻X、Z乘以1.15。">?</span>
+                </span>
             </div>
         </div>
 
         <div class="explosions-section">
             <div class="explosions-section-header">
-                <h4>💥 爆炸样式 (Explosions)</h4>
+                <h4>💥 爆炸样式（Explosions）</h4>
                 <button class="btn-add-sm" onclick="addExplosion(${ent.id})">+ 添加</button>
             </div>
             <div class="explosion-list">
@@ -250,19 +269,19 @@ function renderExplosionCard(entityId, exp, idx) {
         return `
         <div class="color-field">
             <div class="color-field-label">
-                ${fieldName === 'colors' ? '🎨 爆炸颜色 (Colors)' : '🌈 淡化颜色 (FadeColors，可选)'}
+                ${fieldName === 'colors' ? '🎨 爆炸颜色（Colors）' : '🌈 淡化颜色（FadeColors，可选）'}
                 <span class="tooltip" data-tip="${fieldName === 'colors'
                 ? '爆裂时的粒子颜色。同一颜色重复添加可提高该色权重。不选则为黑色'
-                : '爆裂后的淡化粒子颜色(可选)。同一颜色重复添加可提高该色权重'}">?</span>
+                : '爆裂后的淡化粒子颜色（可选）。同一颜色重复添加可提高该色权重'}">?</span>
             </div>
 
             <div class="selected-colors-preview">
-                <span class="selected-colors-label">已选颜色: </span>
+                <span class="selected-colors-label">已选颜色： </span>
                 ${selected.length === 0
                 ? '<span class="selected-colors-label none">无</span>'
                 : selected.map((v, i) => `
                         <div class="mini-swatch" style="background:${decToHex(v)}"
-                             title="${v} (${decToHex(v)}) — 点击移除"
+                             title="${v}（${decToHex(v)}） — 点击移除"
                              onclick="removeColorAt(${entityId}, ${exp.id}, '${fieldName}', ${i})"></div>
                     `).join('')}
             </div>
@@ -278,26 +297,22 @@ function renderExplosionCard(entityId, exp, idx) {
                     </select>
                     <button class="btn-sm" onclick="doGenerate(${entityId}, ${exp.id}, '${fieldName}')">生成配色</button>
                     <button class="btn-sm btn-sm-accent" onclick="addAllGenerated(${entityId}, ${exp.id}, '${fieldName}')">全部添加</button>
+                    <button class="btn-sm" onclick="addGenBaseColor(${entityId}, ${exp.id}, '${fieldName}', 'genBase_${uid}')">添加单色</button>
                 </div>
                 <div class="generator-results" id="genResults_${uid}">
                     ${gen.results.length > 0
                 ? gen.results.map(c => `
                             <div class="color-swatch gen-swatch"
                                  style="background:${c.hex}"
-                                 title="${c.hex} (${c.dec}) — 点击添加"
+                                 title="${c.hex}（${c.dec}） — 点击添加"
                                  onclick="addColor(${entityId}, ${exp.id}, '${fieldName}', ${c.dec})">
                             </div>`).join('')
-                : '<span class="gen-placeholder">点击"生成配色"预览配色方案</span>'
+                : '<span class="gen-placeholder">点击“生成配色”预览配色方案</span>'
             }
                 </div>
             </div>
 
-            <div class="color-custom-row">
-                <input type="color" id="customColor_${uid}" value="#ff0000">
-                <button class="btn-sm" onclick="addCustomColor(${entityId}, ${exp.id}, '${fieldName}')">添加单色</button>
-                <input type="number" id="customDec_${uid}" class="dec-input" placeholder="十进制值" min="0" max="16777215">
-                <button class="btn-sm" onclick="addDecColor(${entityId}, ${exp.id}, '${fieldName}')">添加</button>
-            </div>
+            
 
             <details class="dye-collapsible">
                 <summary>⚠️ 原版染料颜色（颜色不够鲜艳，不推荐用于烟花）</summary>
@@ -305,7 +320,7 @@ function renderExplosionCard(entityId, exp, idx) {
                     ${DYE_COLORS.map(c => `
                         <div class="color-swatch"
                              style="background:${decToHex(c.value)}"
-                             title="${c.name} (${c.dye}: ${c.value}) — 点击添加"
+                             title="${c.name}（${c.dye}： ${c.value}） — 点击添加"
                              onclick="addColor(${entityId}, ${exp.id}, '${fieldName}', ${c.value})">
                         </div>
                     `).join('')}
@@ -323,8 +338,8 @@ function renderExplosionCard(entityId, exp, idx) {
 
         <div class="explosion-params">
             <div class="form-group">
-                <label>形态 (Type)
-                    <span class="tooltip" data-tip="爆裂时的形态: 0=小型球状, 1=大型球状, 2=星形, 3=苦力怕状, 4=喷发状">?</span>
+                <label>形态（Type）
+                    <span class="tooltip" data-tip="爆裂时的形态：0=小型球状，1=大型球状，2=星形，3=苦力怕状，4=喷发状">?</span>
                 </label>
                 <select onchange="updateExplosion(${entityId}, ${exp.id}, 'type', this.value)">
                     ${EXPLOSION_TYPES.map(t => `
@@ -340,7 +355,7 @@ function renderExplosionCard(entityId, exp, idx) {
                                    onchange="updateExplosion(${entityId}, ${exp.id}, 'flicker', this.checked)">
                             <span class="toggle-slider"></span>
                         </label>
-                        <label>闪烁 (Flicker)
+                        <label>闪烁（Flicker）
                             <span class="tooltip" data-tip="烟花是否出现闪烁效果（对应荧石粉合成）">?</span>
                         </label>
                     </div>
@@ -350,7 +365,7 @@ function renderExplosionCard(entityId, exp, idx) {
                                    onchange="updateExplosion(${entityId}, ${exp.id}, 'trail', this.checked)">
                             <span class="toggle-slider"></span>
                         </label>
-                        <label>拖曳 (Trail)
+                        <label>拖曳（Trail）
                             <span class="tooltip" data-tip="烟花是否有拖曳痕迹（对应钻石合成）">?</span>
                         </label>
                     </div>
@@ -430,23 +445,13 @@ function removeColorAt(entityId, explosionId, field, index) {
 
 function addCustomColor(entityId, explosionId, field) {
     const uid = `${entityId}_${explosionId}_${field}`;
-    const picker = document.getElementById(`customColor_${uid}`);
-    if (!picker) return;
-    const dec = hexToDec(picker.value);
-    const ent = entities.find(e => e.id === entityId);
-    if (!ent) return;
-    const exp = ent.explosions.find(x => x.id === explosionId);
-    if (!exp) return;
-    exp[field].push(dec);
-    render();
+    // 旧的自定义颜色输入已被移除。保留空函数体以兼容引用（不会被调用）。
 }
 
-function addDecColor(entityId, explosionId, field) {
-    const uid = `${entityId}_${explosionId}_${field}`;
-    const inp = document.getElementById(`customDec_${uid}`);
-    if (!inp) return;
-    const dec = parseInt(inp.value);
-    if (isNaN(dec) || dec < 0 || dec > 16777215) { alert('请输入 0-16777215 的十进制颜色值'); return; }
+function addGenBaseColor(entityId, explosionId, field, genBaseId) {
+    const picker = document.getElementById(genBaseId);
+    if (!picker) return;
+    const dec = hexToDec(picker.value);
     const ent = entities.find(e => e.id === entityId);
     if (!ent) return;
     const exp = ent.explosions.find(x => x.id === explosionId);
@@ -501,7 +506,7 @@ function generateNBT() {
     const name = document.getElementById('name').value.trim();
     const no = document.getElementById('no').value.trim();
     const tip = document.getElementById('tip').value.trim();
-    if (!name || !no || !tip) { alert('请填写所有基本信息字段!'); return; }
+    if (!name || !no || !tip) { alert('请填写所有基本信息字段！信息重复会导致在物品栏中混淆。'); return; }
 
     // 刷怪笼参数
     const delay = getSelectValue('delay');
@@ -512,7 +517,7 @@ function generateNBT() {
     const spawnCount = getSelectValue('spawnCount');
     const maxNearbyEntities = getSelectValue('maxNearbyEntities');
 
-    if (!maxSpawnDelay || !minSpawnDelay) { alert('请选择最大和最小生成间隔!'); return; }
+    if (!maxSpawnDelay || !minSpawnDelay) { alert('请选择最大和最小生成间隔！'); return; }
 
     // ---- 构建 NBT ----
     let s = 'give @a minecraft:spawner{HideFlags:63,display:{';
@@ -625,7 +630,7 @@ const PRESETS = [
         name: '#1 双色苦力怕',
         desc: '苦力怕形状，白色配各色，放远处',
         spawner: { delay: '-1', requiredPlayerRange: '327', minSpawnDelay: '60', maxSpawnDelay: '180', spawnRange: '10', spawnCount: '2', maxNearbyEntities: '' },
-        basic: { name: '双色苦力怕', no: '1', tip: '放远处' },
+        basic: { name: '双色苦力怕', tip: '放远处' },
         entities: [
             { weight: 2, lifeTime: 44, flight: 1, count: 61, explosions: [{ type: 3, colors: [14188952, 15790320, 14188952], fadeColors: [], flicker: false, trail: false }] },
             { weight: 2, lifeTime: 46, flight: 1, count: 60, explosions: [{ type: 3, colors: [15790320, 14602026, 14602026], fadeColors: [], flicker: false, trail: false }] },
@@ -642,7 +647,7 @@ const PRESETS = [
         name: '#2 星',
         desc: '星形，黄色为主，放远处',
         spawner: { delay: '-1', requiredPlayerRange: '327', minSpawnDelay: '60', maxSpawnDelay: '180', spawnRange: '4', spawnCount: '1', maxNearbyEntities: '' },
-        basic: { name: '星', no: '2', tip: '放远处' },
+        basic: { name: '星', tip: '放远处' },
         entities: [
             { weight: 2, lifeTime: 25, flight: 1, count: 60, explosions: [{ type: 2, colors: [16776960], fadeColors: [], flicker: true, trail: true }] },
             { weight: 2, lifeTime: 25, flight: 1, count: 60, explosions: [{ type: 2, colors: [16776960], fadeColors: [], flicker: false, trail: true }] },
@@ -654,7 +659,7 @@ const PRESETS = [
         name: '#3 双色球',
         desc: '小型球状，带拖曳，双色搭配，无距离限制',
         spawner: { delay: '-1', requiredPlayerRange: '327', minSpawnDelay: '50', maxSpawnDelay: '120', spawnRange: '4', spawnCount: '1', maxNearbyEntities: '' },
-        basic: { name: '双色球', no: '3', tip: '无距离限制' },
+        basic: { name: '双色球', tip: '无距离限制' },
         entities: [
             { weight: 1, lifeTime: 39, flight: 1, count: 61, explosions: [{ type: 0, colors: [12801229, 14188952], fadeColors: [], flicker: false, trail: true }] },
             { weight: 1, lifeTime: 35, flight: 1, count: 61, explosions: [{ type: 0, colors: [4408131, 11250603], fadeColors: [], flicker: false, trail: true }] },
@@ -666,7 +671,7 @@ const PRESETS = [
         name: '#5 中心',
         desc: '经过精心设计的特殊烟花，在玩家正上方爆炸才能达到效果',
         spawner: { delay: '-1', requiredPlayerRange: '327', minSpawnDelay: '400', maxSpawnDelay: '500', spawnRange: '3', spawnCount: '1', maxNearbyEntities: '' },
-        basic: { name: '中心', no: '5', tip: '只能放在正中央' },
+        basic: { name: '中心', tip: '只能放在正中央' },
         entities: [
             {
                 weight: 2, lifeTime: 30, flight: 1, count: 3, explosions: [
@@ -688,7 +693,7 @@ const PRESETS = [
         name: '#6 爆裂',
         desc: '喷发状，多彩搭配，无距离限制',
         spawner: { delay: '-1', requiredPlayerRange: '327', minSpawnDelay: '100', maxSpawnDelay: '200', spawnRange: '4', spawnCount: '1', maxNearbyEntities: '' },
-        basic: { name: '爆裂', no: '6', tip: '无距离限制' },
+        basic: { name: '爆裂', tip: '无距离限制' },
         entities: [
             {
                 weight: 1, lifeTime: 30, flight: 1, count: 1, explosions: [
@@ -720,7 +725,7 @@ const PRESETS = [
         name: '#7 苦力怕',
         desc: '大球+苦力怕，彩虹色，放远处',
         spawner: { delay: '-1', requiredPlayerRange: '327', minSpawnDelay: '400', maxSpawnDelay: '800', spawnRange: '4', spawnCount: '1', maxNearbyEntities: '' },
-        basic: { name: '苦力怕', no: '7', tip: '放远处' },
+        basic: { name: '苦力怕', tip: '放远处' },
         entities: [
             {
                 weight: 1, lifeTime: 20, flight: 1, count: 1, explosions: [
@@ -740,7 +745,7 @@ const PRESETS = [
         name: '#8 主题色大球',
         desc: '大型球状，使用各种有特殊意义的颜色，无距离限制',
         spawner: { delay: '-1', requiredPlayerRange: '327', minSpawnDelay: '100', maxSpawnDelay: '200', spawnRange: '4', spawnCount: '1', maxNearbyEntities: '' },
-        basic: { name: '主题色大球', no: '8', tip: '无距离限制' },
+        basic: { name: '主题色大球', tip: '无距离限制' },
         entities: [
             { weight: 1, lifeTime: 35, flight: 1, count: 1, explosions: [{ type: 1, colors: [6737151], fadeColors: [], flicker: false, trail: true }] },
             {
@@ -819,7 +824,6 @@ function loadPreset() {
 
     // 基本信息
     document.getElementById('name').value = preset.basic.name;
-    document.getElementById('no').value = preset.basic.no;
     document.getElementById('tip').value = preset.basic.tip;
 
     // 刷怪笼参数
